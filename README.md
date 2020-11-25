@@ -13,12 +13,12 @@ This project consists of 3 parts: <br>
 ## Part 1: Stream tweets from the Twitter API using tweepy (twitter_connection.py) <br>
 The user selects locally a keyword and gets back live streaming tweets that include this keyword
 
-         from tweepy import OAuthHandler
-         from tweepy import Stream
-         from tweepy.streaming import StreamListener
+     from tweepy import OAuthHandler
+     from tweepy import Stream
+     from tweepy.streaming import StreamListener
          
-         # Set up your credentials
-         consumer_key='<CONSUMER_KEY
+     # Set up your credentials
+     consumer_key='<CONSUMER_KEY
 
 ## Part 2: Preprocess the tweets using pyspark (Spark Structure Streaming)<br>
 
