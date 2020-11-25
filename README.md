@@ -13,8 +13,9 @@ This project consists of 3 parts: <br>
 ## Part 1: Stream tweets from the Twitter API using tweepy (twitter_connection.py) <br>
 The user selects locally a keyword and gets back live streaming tweets that include this keyword
 
-Part 2: Preprocess the tweets using pyspark (Spark Structure Streaming)<br>
-Part 3: Apply sentiment analysis using textblob <br>
+## Part 2: Preprocess the tweets using pyspark (Spark Structure Streaming)<br>
+
+## Part 3: Apply sentiment analysis using textblob <br>
 
 
 
