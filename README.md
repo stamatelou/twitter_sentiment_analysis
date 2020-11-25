@@ -8,13 +8,13 @@ This project is a good start for those want to start learning Spark Structure St
 
 ![Architecture](https://github.com/stamatelou/twitter_sentiment_analysis/blob/master/architecture.png)
 
-This project consists of 3 steps: <br>
+This project consists of 3 parts: <br>
 
-Step 1: Stream tweets from the Twitter API using tweepy<br>
+Part 1: Stream tweets from the Twitter API using tweepy<br>
 The user selects locally a keyword and gets back live streaming tweets that include this keyword
 
-Step 2: Preprocess the tweets using pyspark (Spark Structure Streaming)<br>
-Step 3: Apply sentiment analysis using textblob <br>
+Part 2: Preprocess the tweets using pyspark (Spark Structure Streaming)<br>
+Part 3: Apply sentiment analysis using textblob <br>
 
 
 
