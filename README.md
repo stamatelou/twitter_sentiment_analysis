@@ -13,7 +13,7 @@ This project is a good start for those want to start learning Spark Structure St
 We use Python version 3.7.6 and Spark version 2.4.7. We should be cautious on the versions that we use because different versions of Spark require a different version of Python. 
 
 ## Main Libraries
-<b> tweepy:</b> create a live data streaming pipeline with Twitter <br>
+<b> tweepy:</b> interact with the Twitter Streaming API and create a live data streaming pipeline with Twitter <br>
 <b> pyspark: </b>preprocess the twitter data (Python's Spark library) <br>
 <b> textblob:</b> apply sentiment analysis on the twitter text data <br>
 
@@ -21,7 +21,7 @@ We use Python version 3.7.6 and Spark version 2.4.7. We should be cautious on th
 This project consists of 3 parts: <br>
 ## Part 1: Stream tweets from the Twitter Streaming API using tweepy (twitter_connection.py) <br>
 
-Step 1:Setup necessary packages <br>
+<b> Step 1: </b> Setup necessary packages <br>
 
 ```
 import tweepy
@@ -31,8 +31,19 @@ from tweepy.streaming import StreamListener
 import socket
 import json
 ```
+Tweepy library is necessary for connecting to the Twitter API and building the data streaming pipeline. We import its classes; StreamListener and Stream for building the stream and OAuthHandler for authenticating on Twitter. We import the socket module to create a communication channel between our local machine and the Twitter API and the json module to handle data of JSON objects.
 
-To start, we are going to need some packages to help build our streaming script. Tweepy is an excellent Python package for interacting with the Twitter API. For this, we need a few classes from it: StreamListener and Stream (for building our stream) and OAuthHandler (for authentication on Twitter). You will need to register on Twitter for developer credentials that we’ll be inserting later. datetime and csvwill be used for handling the output and putting the tweets from our stream into a file.
+<b> Step 1: </b> Insert your credentials  <br>
+
+```
+consumer_key='hidden'
+consumer_secret='hidden'
+access_token ='hidden'
+access_secret='hidden'
+```
+
+
+You will need to register on Twitter for developer credentials that we’ll be inserting later. datetime and csvwill be used for handling the output and putting the tweets from our stream into a file.
 
 
  Create a listening socket in the local machine (server) with a predefined local IP address and a port.
@@ -52,17 +63,9 @@ Step 5: Retrieve the text of each tweet
 
 The user selects locally a keyword and gets back live streaming tweets that include this keyword
 ```
-import tweepy
-from tweepy import OAuthHandler
-from tweepy import Stream
-from tweepy.streaming import StreamListener
-import socket
-import json
 
-consumer_key='LovGCp4taXgOGclj9Wum2XEda'
-consumer_secret='d2NhvrqiEhsp8iBBZ1zsN5fl79AOwr0DOktoNqzIC56bK5NCLG'
-access_token ='1323237425498435584-9TGePmcG2nq56MmN71K5jh7TBWd1AX'
-access_secret='nhLAqoCicm4FJXwRw75MeQTeXxRu9L0Us4RqVxXgQP9AQ'
+
+
 
 class TweetsListener(StreamListener):
   # tweet object listens for the tweets
