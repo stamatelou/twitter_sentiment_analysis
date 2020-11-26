@@ -2,6 +2,7 @@
 
 This project is a good start for those want to start learning Spark Structure Streaming in Python. <br>
 
+Spark Structured Streaming/ Spark Streaming (why we chose the one and not the other?) 
 
 
 <b> Input data:</b> Live tweets with a preselected keyword <br>
@@ -33,8 +34,7 @@ import json
 ```
 Tweepy library is necessary for connecting to the Twitter API and building the data streaming pipeline. We import its classes; StreamListener and Stream for building the stream and OAuthHandler for authenticating on Twitter. We import the socket module to create a communication channel between our local machine and the Twitter API and the json module to handle data of JSON objects.
 
-<b> Step 1: </b> Insert your credentials  <br>
-
+<b> Step 2: </b> Insert your credentials  <br>
 ```
 consumer_key='hidden'
 consumer_secret='hidden'
@@ -42,9 +42,7 @@ access_token ='hidden'
 access_secret='hidden'
 ```
 
-
-You will need to register on Twitter for developer credentials that we’ll be inserting later. datetime and csvwill be used for handling the output and putting the tweets from our stream into a file.
-
+Use your developer credentials. If you do not have them yet, you will need to register on [Twitter for a developer account](https://developer.twitter.com/en/apply-for-access) and the request your credentials. 
 
  Create a listening socket in the local machine (server) with a predefined local IP address and a port.
 
