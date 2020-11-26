@@ -44,7 +44,7 @@ access_secret='hidden'
 
 Use your developer credentials. If you do not have them yet, you will need to register on [Twitter for a developer account](https://developer.twitter.com/en/apply-for-access) and the request your credentials. 
 
-<b> Step 2: </b> Insert your credentials  <br>
+<b> Step 3: </b> Insert your credentials  <br>
 ```
 class TweetsListener(StreamListener):
   # tweet object listens for the tweets
@@ -71,45 +71,22 @@ class TweetsListener(StreamListener):
     print(status)
     return True
 ```
+The class TweetsListener represents a StreamListener instance and creates the instance when we activate the Stream. The <b>on_data</b> method of the TweetsListener receives all messages and defines which data to extract for each tweet from the Twitter Streaming API. Some examples could be the main message,comments,and hashtags. In our case we want to extract the text of the tweet. If we request the ['text'] field from each tweet, we will only receive the messages that are shorter than 140 characters. To always receive the full message, we need first to check if the tweet is longer than 140 charachetrs. If it is, we extract the ['extended_tweet']['full_text'] and if it is not we extract as before the ['text'] field. The <b>_init_</b> method initializes the socket of the Twitter Streaming API and the <b>on_error</b>  method make sure that the stream works and the ing.
 
 
+
+When we activate our StreamListener, which will serve all tweets that match our criteria, we use the above class to help handle it. Our functions, on_status and on_error are for checking to make sure the stream is working. If it returns an error status code, the script will stop.
+When our stream is going, each tweet comes through as status, which has a number of details. Here is just a quick breakdown of the details contained in each tweet:
+
+In Tweepy, an instance of Stream establishes a streaming session and routes messages to StreamListener instance.  The default StreamListener can classify most common twitter messages and routes them to appropriately named methods, but these methods are only stubs.
 
 Create a listening socket in the local machine (server) with a predefined local IP address and a port.
 Step 2: Listen for a connection client in a IP address and port on the client side of the connection.
 Step 3: Authenticate the connection with the Streaming API based on the personal credentials.
 Step 4: Start streaming tweet data objects with a user-defined keyword and language.
 Step 5: Retrieve the text of each tweet 
-
-
-
-
 The user selects locally a keyword and gets back live streaming tweets that include this keyword
 ```
-class TweetsListener(StreamListener):
-  # tweet object listens for the tweets
-  def __init__(self, csocket):
-      self.client_socket = csocket
-  def on_data(self, data):
-    try:  
-        msg = json.loads( data )
-        print("new message")
-        # if tweet is longer than 140 characters
-        if "extended_tweet" in msg:
-          # add at the end "end_of_tweet" to facilitate preprocessing
-          self.client_socket.send(str(msg['extended_tweet']['full_text'] +"end_of_tweet").encode('utf-8'))         
-          print(msg['extended_tweet']['full_text'])
-        else:
-          # add at the end "end_of_tweet" to facilitate preprocessing
-          self.client_socket.send(str(msg['text']+"end_of_tweet").encode('utf-8'))
-          print(msg['text'])
-        return True
-    except BaseException as e:
-        print("Error on_data: %s" % str(e))
-    return True
-  def on_error(self, status):
-    print(status)
-    return True
-
 def sendData(c_socket, keyword):
   print('start sending data from client - Twitter to server - local machine')
   # authentication based on the credentials
