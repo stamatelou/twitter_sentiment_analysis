@@ -44,13 +44,37 @@ access_secret='hidden'
 
 Use your developer credentials. If you do not have them yet, you will need to register on [Twitter for a developer account](https://developer.twitter.com/en/apply-for-access) and the request your credentials. 
 
- Create a listening socket in the local machine (server) with a predefined local IP address and a port.
+<b> Step 2: </b> Insert your credentials  <br>
+```
+class TweetsListener(StreamListener):
+  # tweet object listens for the tweets
+  def __init__(self, csocket):
+      self.client_socket = csocket
+  def on_data(self, data):
+    try:  
+        msg = json.loads( data )
+        print("new message")
+        # if tweet is longer than 140 characters
+        if "extended_tweet" in msg:
+          # add at the end "end_of_tweet" to facilitate preprocessing
+          self.client_socket.send(str(msg['extended_tweet']['full_text'] +"end_of_tweet").encode('utf-8'))         
+          print(msg['extended_tweet']['full_text'])
+        else:
+          # add at the end "end_of_tweet" to facilitate preprocessing
+          self.client_socket.send(str(msg['text']+"end_of_tweet").encode('utf-8'))
+          print(msg['text'])
+        return True
+    except BaseException as e:
+        print("Error on_data: %s" % str(e))
+    return True
+  def on_error(self, status):
+    print(status)
+    return True
+```
 
 
 
-
-
-
+Create a listening socket in the local machine (server) with a predefined local IP address and a port.
 Step 2: Listen for a connection client in a IP address and port on the client side of the connection.
 Step 3: Authenticate the connection with the Streaming API based on the personal credentials.
 Step 4: Start streaming tweet data objects with a user-defined keyword and language.
@@ -61,10 +85,6 @@ Step 5: Retrieve the text of each tweet
 
 The user selects locally a keyword and gets back live streaming tweets that include this keyword
 ```
-
-
-
-
 class TweetsListener(StreamListener):
   # tweet object listens for the tweets
   def __init__(self, csocket):
