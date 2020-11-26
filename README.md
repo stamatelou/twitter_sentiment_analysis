@@ -13,11 +13,12 @@ This project is a good start for those want to start learning Spark Structure St
 We use Python version 3.7.6 and Spark version 2.4.7. We should be cautious on the versions that we use because different versions of Spark require a different version of Python. 
 
 ## Main Libraries
-tweepy: create a live data streaming pipeline with Twitter 
+tweepy: create a live data streaming pipeline with Twitter <br>
 pyspark: preprocess the twitter data (Python's Spark library) <br>
-textblob: apply sentiment analysis on the twitter text data 
-This project consists of 3 parts: <br>
+textblob: apply sentiment analysis on the twitter text data <br>
 
+
+This project consists of 3 parts: <br>
 ## Part 1: Stream tweets from the Twitter Streaming API using tweepy (twitter_connection.py) <br>
 
 Step 1:Setup necessary packages <br>
