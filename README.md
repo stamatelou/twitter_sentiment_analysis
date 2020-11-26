@@ -1,4 +1,4 @@
-<H1>Streaming twitter data in real-time and sentiment analysis with Spark Structured Streaming & Python </H1>
+<H1>Sentiment analysis on streaming twitter data in real-time using Spark Structured Streaming & Python </H1>
 
 This project is a good start for those want to start learning Spark Structure Streaming in Python. <br>
 
