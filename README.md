@@ -41,7 +41,6 @@ consumer_secret='hidden'
 access_token ='hidden'
 access_secret='hidden'
 ```
-
 Use your developer credentials. If you do not have them yet, you will need to register on [Twitter for a developer account](https://developer.twitter.com/en/apply-for-access) and the request your credentials. 
 
 <b> Step 3: </b> Create a StreamListener instance <br>
@@ -86,18 +85,9 @@ def sendData(c_socket, keyword):
   twitter_stream = Stream(auth, TweetsListener(c_socket))
   twitter_stream.filter(track = keyword, languages=["en"])
 ```
-To start getting data from the Twitter API, we first authenticate the connection with the API based on the personal credentials.
-Step 4: Start streaming tweet data objects with a user-defined keyword and language.
-Step 5: Retrieve the text of each tweet 
+To start getting data from the Twitter API, we first authenticate the connection with the API based on our personal credentials as we defined in Step 2. After authentication, we start streaming tweet data objects with a pre-defined keyword and language. The objects returned are tweets, which belong to the TweetsListener class. 
 
-
-
-
-<b> Step 5: </b> ---- <br>
-Create a listening socket in the local machine (server) with a predefined local IP address and a port.
-Step 2: Listen for a connection client in a IP address and port on the client side of the connection.
-
-The user selects locally a keyword and gets back live streaming tweets that include this keyword
+<b> Step 5:</b> Start Streaming <br>
 ```
 if __name__ == "__main__":
     # server (local machine) creates listening socket
@@ -115,8 +105,57 @@ if __name__ == "__main__":
     # select here the keyword for the tweet data
     sendData(c_socket, keyword = ['piano'])
 ```
-## Part 2: Preprocess the tweets using pyspark (Spark Structure Streaming)<br>
+Before start streaming data from Twitter, we need to create a listening socket in the local machine (server) with a predefined local IP address and a port. Then, the socket listens for a connection client in a IP address and port on the client side of the connection. When we will run the script the client side of the connection will receive the data from the Twitter Streaming API. Here, we also select the keyword, which needs to be contained in the returned tweets.  
 
+## Part 2: Preprocess the tweets using pyspark (Spark Structure Streaming)<br>
+```
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import *
+from pyspark.sql.types import *
+from pyspark.sql.functions import col, split
+import re
+from pyspark.sql import functions as F
+from pyspark.sql.functions import udf
+from textblob import TextBlob
+
+if __name__ == "__main__":
+    # create Spark session
+    spark = SparkSession.builder.appName("TwitterSentimentAnalysis").getOrCreate()
+
+    # read the tweet data from socket
+    lines = spark.readStream.format("socket").option("host", "0.0.0.0").option("port", 5555).load()
+    # Split the lines into words
+    words = lines.select(explode(split(lines.value, "end_of_tweet")).alias("word"))
+    words = words.na.replace('', None)
+    words = words.na.drop()
+    words = words.withColumn('word', F.regexp_replace('word', r'http\S+', ''))
+    words = words.withColumn('word', F.regexp_replace('word', '@\w+', ''))
+    words = words.withColumn('word', F.regexp_replace('word', '#', ''))
+    words = words.withColumn('word', F.regexp_replace('word', 'RT', ''))
+    words = words.withColumn('word', F.regexp_replace('word', ':', ''))
+
+    def polarity_detection(text):
+        return TextBlob(text).sentiment.polarity
+    polarity_detection_udf = udf(polarity_detection, StringType())
+    words =words.withColumn("polarity", polarity_detection_udf("word"))
+
+    def subjectivity_detection(text):
+        return TextBlob(text).sentiment.subjectivity
+    subjectivity_detection_udf = udf(subjectivity_detection, StringType())
+    words =words.withColumn("subjectivity", subjectivity_detection_udf("word"))
+
+    words =words.repartition(1)
+    #query = words.writeStream.format("parquet").option("parquet.block.size", "1KB").option("checkpointLocation", "C:/Users/20194066/PycharmProjects/gettingstarted/venv").option("path", "C:/Users/20194066/PycharmProjects/gettingstarted/venv").start()
+    query = words.writeStream.queryName("all_tweets").outputMode("append").format("parquet").option("path", "C:/Users/20194066/PycharmProjects/gettingstarted/venv/parc").option("checkpointLocation", "C:/Users/20194066/PycharmProjects/gettingstarted/venv/check").trigger(processingTime='60 seconds').start()
+    #query = words.writeStream.outputMode("append").format("memory").queryName("tweetquery").start()
+
+    query.awaitTermination()
+
+    #query = words.writeStream.format("console").outputMode("append").start()
+
+    #data = spark.sql("select * from tweetquery").show()
+
+```
 ## Part 3: Apply sentiment analysis using textblob <br>
 
 
