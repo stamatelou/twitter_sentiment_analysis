@@ -22,7 +22,7 @@ We use Python version 3.7.6 and Spark version 2.4.7. We should be cautious on th
 This project consists of 3 parts: <br>
 ## Part 1: Stream tweets from the Twitter Streaming API using tweepy (twitter_connection.py) <br>
 
-<b> Step 1: </b> Setup necessary packages <br>
+### <b>Step 1: </b> Setup necessary packages <br>
 
 ```
 import tweepy
@@ -34,7 +34,7 @@ import json
 ```
 Tweepy library is necessary for connecting to the Twitter API and building the data streaming pipeline. We import its classes; StreamListener and Stream for building the stream and OAuthHandler for authenticating on Twitter. We import the socket module to create a communication channel between our local machine and the Twitter API and the json module to handle data of JSON objects.
 
-<b> Step 2: </b> Insert your credentials  <br>
+###<b> Step 2: </b> Insert your credentials  <br>
 ```
 consumer_key='hidden'
 consumer_secret='hidden'
@@ -43,7 +43,7 @@ access_secret='hidden'
 ```
 Use your developer credentials. If you do not have them yet, you will need to register on [Twitter for a developer account](https://developer.twitter.com/en/apply-for-access) and the request your credentials. 
 
-<b> Step 3: </b> Create a StreamListener instance <br>
+### <b> Step 3: </b> Create a StreamListener instance <br>
 ```
 class TweetsListener(StreamListener):
   # tweet object listens for the tweets
@@ -74,7 +74,7 @@ The class TweetsListener represents a StreamListener instance, which contains on
 The <b>on_data</b> method of the TweetsListener receives all messages and defines which data to extract for each tweet from the Twitter Streaming API. Some examples could be the main message,comments,and hashtags. In our case we want to extract the text of the tweet. If we request the ['text'] field from each tweet, we will only receive the messages that are shorter than 140 characters. To always receive the full message, we need first to check if the tweet is longer than 140 charachetrs. If it is, we extract the ['extended_tweet']['full_text'] and if it is not we extract as before the ['text'] field. <br>
 The <b>__init__</b> method initializes the socket of the Twitter Streaming API and the <b>on_error</b> method make sure that the stream works.
 
-<b> Step 4: </b> Sent data from Twitter <br>
+### <b> Step 4: </b> Sent data from Twitter <br>
 ```
 def sendData(c_socket, keyword):
   print('start sending data from client - Twitter to server - local machine')
@@ -87,7 +87,7 @@ def sendData(c_socket, keyword):
 ```
 To start getting data from the Twitter API, we first authenticate the connection with the API based on our personal credentials as we defined in Step 2. After authentication, we start streaming tweet data objects with a pre-defined keyword and language. The objects returned are tweets, which belong to the TweetsListener class. 
 
-<b> Step 5:</b> Start Streaming <br>
+### <b> Step 5:</b> Start Streaming <br>
 ```
 if __name__ == "__main__":
     # server (local machine) creates listening socket
