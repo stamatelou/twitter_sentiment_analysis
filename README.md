@@ -75,8 +75,7 @@ The class TweetsListener represents a StreamListener instance, which contains on
 The <b>on_data</b> method of the TweetsListener receives all messages and defines which data to extract for each tweet from the Twitter Streaming API. Some examples could be the main message,comments,and hashtags. In our case we want to extract the text of the tweet. If we request the ['text'] field from each tweet, we will only receive the messages that are shorter than 140 characters. To always receive the full message, we need first to check if the tweet is longer than 140 charachetrs. If it is, we extract the ['extended_tweet']['full_text'] and if it is not we extract as before the ['text'] field. <br>
 The <b>__init__</b> method initializes the socket of the Twitter Streaming API and the <b>on_error</b> method make sure that the stream works.
 
-<b> Step 4: </b> ------- <br>
-
+<b> Step 4: </b> Sent data from Twitter <br>
 ```
 def sendData(c_socket, keyword):
   print('start sending data from client - Twitter to server - local machine')
@@ -86,14 +85,18 @@ def sendData(c_socket, keyword):
   # start sending data from the Streaming API 
   twitter_stream = Stream(auth, TweetsListener(c_socket))
   twitter_stream.filter(track = keyword, languages=["en"])
-  ```
-  
-<b> Step 5: </b> Create a StreamListener instance <br>
-Create a listening socket in the local machine (server) with a predefined local IP address and a port.
-Step 2: Listen for a connection client in a IP address and port on the client side of the connection.
-Step 3: Authenticate the connection with the Streaming API based on the personal credentials.
+```
+To start getting data from the Twitter API, we first authenticate the connection with the API based on the personal credentials.
 Step 4: Start streaming tweet data objects with a user-defined keyword and language.
 Step 5: Retrieve the text of each tweet 
+
+
+
+
+<b> Step 5: </b> ---- <br>
+Create a listening socket in the local machine (server) with a predefined local IP address and a port.
+Step 2: Listen for a connection client in a IP address and port on the client side of the connection.
+
 The user selects locally a keyword and gets back live streaming tweets that include this keyword
 ```
 if __name__ == "__main__":
