@@ -145,15 +145,8 @@ if __name__ == "__main__":
     words =words.withColumn("subjectivity", subjectivity_detection_udf("word"))
 
     words =words.repartition(1)
-    #query = words.writeStream.format("parquet").option("parquet.block.size", "1KB").option("checkpointLocation", "C:/Users/20194066/PycharmProjects/gettingstarted/venv").option("path", "C:/Users/20194066/PycharmProjects/gettingstarted/venv").start()
     query = words.writeStream.queryName("all_tweets").outputMode("append").format("parquet").option("path", "C:/Users/20194066/PycharmProjects/gettingstarted/venv/parc").option("checkpointLocation", "C:/Users/20194066/PycharmProjects/gettingstarted/venv/check").trigger(processingTime='60 seconds').start()
-    #query = words.writeStream.outputMode("append").format("memory").queryName("tweetquery").start()
-
     query.awaitTermination()
-
-    #query = words.writeStream.format("console").outputMode("append").start()
-
-    #data = spark.sql("select * from tweetquery").show()
 
 ```
 ## Part 3: Apply sentiment analysis using textblob <br>
