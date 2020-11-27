@@ -34,7 +34,7 @@ import json
 ```
 Tweepy library is necessary for connecting to the Twitter API and building the data streaming pipeline. We import its classes; StreamListener and Stream for building the stream and OAuthHandler for authenticating on Twitter. We import the socket module to create a communication channel between our local machine and the Twitter API and the json module to handle data of JSON objects.
 
-###<b> Step 2: </b> Insert your credentials  <br>
+### <b> Step 2: </b> Insert your credentials  <br>
 ```
 consumer_key='hidden'
 consumer_secret='hidden'
