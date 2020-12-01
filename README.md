@@ -18,6 +18,9 @@ We use Python version 3.7.6 and Spark version 2.4.7. We should be cautious on th
 <b> pyspark: </b>preprocess the twitter data (Python's Spark library) <br>
 <b> textblob:</b> apply sentiment analysis on the twitter text data <br>
 
+## Instructions
+Run in a IDE locally the twitter_connection.py
+First run the part one and let it running, and then run the part from a different IDE. 
 
 This project consists of 3 parts: <br>
 ## Part 1: Stream tweets from the Twitter Streaming API using tweepy (twitter_connection.py) <br>
@@ -107,7 +110,7 @@ if __name__ == "__main__":
 ```
 Before start streaming data from Twitter, we need to create a listening socket in the local machine (server) with a predefined local IP address and a port. Then, the socket listens for a connection client in a IP address and port on the client side of the connection. When we will run the script the client side of the connection will receive the data from the Twitter Streaming API. Here, we also select the keyword, which needs to be contained in the returned tweets.  
 
-## Part 2: Preprocess the tweets using pyspark (Spark Structure Streaming)<br>
+## Part 2: Preprocess the tweets using pyspark (sentiment_analysis.py)<br>
 
 ### <b>Step 1: </b> Setup the necessary packages <br>
 ```
@@ -176,6 +179,4 @@ if __name__ == "__main__":
 We first create an empty SparkSession, we connect it to the socket we made available in the Part 1, and we load the batches with the tweet data locally. As soon as we receive the batch from the socket, we preprocess the received data, and then we apply the text classification to each tweet to define its polarity and subjectivity. Then, we collect all the tweets and save it in one file every minute (60 seconds) for efficient reads. The format of the saved file is parquet and to load it we downloaded the [ParquetFileViewer.exe](https://github.com/mukunku/ParquetViewer)
 
 
-
-First run the part one and let it running, and then run the part from a different IDE. 
 
