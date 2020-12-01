@@ -168,8 +168,8 @@ if __name__ == "__main__":
     words = words.repartition(1)
     query = words.writeStream.queryName("all_tweets")\
         .outputMode("append").format("parquet")\
-        .option("path", "C:/Users/20194066/PycharmProjects/gettingstarted/venv/parc")\
-        .option("checkpointLocation", "C:/Users/20194066/PycharmProjects/gettingstarted/venv/check")\
+        .option("path", "./parc")\
+        .option("checkpointLocation", "./check")\
         .trigger(processingTime='60 seconds').start()
     query.awaitTermination()
 ```
