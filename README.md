@@ -51,21 +51,25 @@ Use your developer credentials. If you do not have them yet, you will need to re
 class TweetsListener(StreamListener):
   # tweet object listens for the tweets
   def __init__(self, csocket):
-      self.client_socket = csocket
+    self.client_socket = csocket
   def on_data(self, data):
     try:  
-        msg = json.loads( data )
-        print("new message")
-        # if tweet is longer than 140 characters
-        if "extended_tweet" in msg:
-          # add at the end "end_of_tweet" to facilitate preprocessing
-          self.client_socket.send(str(msg['extended_tweet']['full_text'] +"end_of_tweet").encode('utf-8'))         
-          print(msg['extended_tweet']['full_text'])
-        else:
-          # add at the end "end_of_tweet" to facilitate preprocessing
-          self.client_socket.send(str(msg['text']+"end_of_tweet").encode('utf-8'))
-          print(msg['text'])
-        return True
+      msg = json.loads( data )
+      print("new message")
+      # if tweet is longer than 140 characters
+      if "extended_tweet" in msg:
+        # add at the end "t_end" to facilitate preprocessing
+        self.client_socket\
+            .send(str(msg['extended_tweet']['full_text']+"t_end")\
+            .encode('utf-8'))         
+        print(msg['extended_tweet']['full_text'])
+      else:
+        # add at the end "t_end" to facilitate preprocessing
+        self.client_socket\
+            .send(str(msg['text']+"t_end")\
+            .encode('utf-8'))
+        print(msg['text'])
+      return True
     except BaseException as e:
         print("Error on_data: %s" % str(e))
     return True
@@ -74,7 +78,7 @@ class TweetsListener(StreamListener):
     return True
 ```
 The class TweetsListener represents a StreamListener instance, which contains one tweet per time. When we will activate the Stream, it creates the instance. The class consists of 3 methods; the on_data, the on_error, and the init. <br>
-The <b>on_data</b> method of the TweetsListener receives all messages and defines which data to extract for each tweet from the Twitter Streaming API. Some examples could be the main message,comments,and hashtags. In our case we want to extract the text of the tweet. If we request the ['text'] field from each tweet, we will only receive the messages that are shorter than 140 characters. To always receive the full message, we need first to check if the tweet is longer than 140 charachetrs. If it is, we extract the ['extended_tweet']['full_text'] and if it is not we extract as before the ['text'] field. In the end of each tweet, we add the "end_of_tweet", so that we can identify easier the end of each tweet later. <br>
+The <b>on_data</b> method of the TweetsListener receives all messages and defines which data to extract for each tweet from the Twitter Streaming API. Some examples could be the main message,comments,and hashtags. In our case we want to extract the text of the tweet. If we request the ['text'] field from each tweet, we will only receive the messages that are shorter than 140 characters. To always receive the full message, we need first to check if the tweet is longer than 140 charachetrs. If it is, we extract the ['extended_tweet']['full_text'] and if it is not we extract as before the ['text'] field. In the end of each tweet, we add the "t_end", so that we can identify easier the end of each tweet later. <br>
 The <b>__init__</b> method initializes the socket of the Twitter Streaming API and the <b>on_error</b> method make sure that the stream works.
 
 ### <b> Step 4: </b> Sent data from Twitter <br>
@@ -125,7 +129,7 @@ Pyspark is the Python API for Spark. Here, we use Spark Structured Streaming, wh
 ### <b>Step 2: </b> Preprocessing the tweets <br>
 ```
 def preprocessing(lines):
-    words = lines.select(explode(split(lines.value, "end_of_tweet")).alias("word"))
+    words = lines.select(explode(split(lines.value, "t_end")).alias("word"))
     words = words.na.replace('', None)
     words = words.na.drop()
     words = words.withColumn('word', F.regexp_replace('word', r'http\S+', ''))
@@ -135,7 +139,7 @@ def preprocessing(lines):
     words = words.withColumn('word', F.regexp_replace('word', ':', ''))
     return words
 ```
-Preprocess the tweets so that we can have only the tweet text. It receives in each batch many tweets from the Streaming Twitter API, and splits the tweets at the word "end_of_tweet". Then, it replaces the removes the empty rows and it applies regular expressions to clean up the tweet text. It removes the links (https://..), the usernames (@..), the hashtags (#), the string that indicates if the current tweet is a retweet (RT), and the character ":". 
+Preprocess the tweets so that we can have only the tweet text. It receives in each batch many tweets from the Streaming Twitter API, and splits the tweets at the word "t_end". Then, it replaces the removes the empty rows and it applies regular expressions to clean up the tweet text. It removes the links (https://..), the usernames (@..), the hashtags (#), the string that indicates if the current tweet is a retweet (RT), and the character ":". 
 
 ### <b>Step 3: </b> Tweet classification <br>
 ```
@@ -176,7 +180,7 @@ if __name__ == "__main__":
         .trigger(processingTime='60 seconds').start()
     query.awaitTermination()
 ```
-We first create an empty SparkSession, we connect it to the socket we made available in the Part 1, and we load the batches with the tweet data locally. As soon as we receive the batch from the socket, we preprocess the received data, and then we apply the text classification to each tweet to define its polarity and subjectivity. Then, we collect all the tweets and save them in one file every minute (60 seconds) for efficient reads. The format of the saved file is parquet and to load it we downloaded the [ParquetFileViewer.exe](https://github.com/mukunku/ParquetViewer)
+We first create an empty SparkSession, we connect it to the socket we made available in Part 1, and we load the batches with the tweet data locally. As soon as we receive the batch from the socket, we preprocess the received data, and then we apply the text classification to each tweet to define its polarity and subjectivity. Then, we collect all the tweets and save them in one file every minute (60 seconds) for efficient reads. The format of the saved file is parquet and to load it we downloaded the [ParquetFileViewer.exe](https://github.com/mukunku/ParquetViewer)
 
 
 
