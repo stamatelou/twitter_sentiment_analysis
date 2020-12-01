@@ -22,7 +22,7 @@ We use Python version 3.7.6 and Spark version 2.4.7. We should be cautious on th
 This project consists of 3 parts: <br>
 ## Part 1: Stream tweets from the Twitter Streaming API using tweepy (twitter_connection.py) <br>
 
-### <b>Step 1: </b> Setup necessary packages <br>
+### <b>Step 1: </b> Setup the necessary packages <br>
 
 ```
 import tweepy
@@ -108,16 +108,25 @@ if __name__ == "__main__":
 Before start streaming data from Twitter, we need to create a listening socket in the local machine (server) with a predefined local IP address and a port. Then, the socket listens for a connection client in a IP address and port on the client side of the connection. When we will run the script the client side of the connection will receive the data from the Twitter Streaming API. Here, we also select the keyword, which needs to be contained in the returned tweets.  
 
 ## Part 2: Preprocess the tweets using pyspark (Spark Structure Streaming)<br>
+
+### <b>Step 1: </b> Setup the necessary packages <br>
+
 ```
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
-from pyspark.sql.functions import col, split
-import re
 from pyspark.sql import functions as F
-from pyspark.sql.functions import udf
 from textblob import TextBlob
+```
 
+Pyspark is the Python API for Spark. Here, we use Spark Structured Streaming, which is a stream processing engine built on the Spark SQL engine and that's why we import the pyspark.sql module. We import it classes; SparkSession to create a stream sessions, functions and types to make available a list of build-in functions and data types accordingly. 
+
+### <b>Step 2: </b> Setup the necessary packages <br>
+
+
+
+
+```
 if __name__ == "__main__":
     # create Spark session
     spark = SparkSession.builder.appName("TwitterSentimentAnalysis").getOrCreate()
@@ -149,6 +158,9 @@ if __name__ == "__main__":
     query.awaitTermination()
 
 ```
+
+For opening the parquet files download 
+
 ## Part 3: Apply sentiment analysis using textblob <br>
 
 
