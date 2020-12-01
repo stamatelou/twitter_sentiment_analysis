@@ -84,7 +84,7 @@ The <b>__init__</b> method initializes the socket of the Twitter Streaming API a
 ### <b> Step 4: </b> Sent data from Twitter <br>
 ```
 def sendData(c_socket, keyword):
-  print('start sending data from client - Twitter to server - local machine')
+  print('start sending data from client to server')
   # authentication based on the credentials
   auth = OAuthHandler(consumer_key, consumer_secret)
   auth.set_access_token(access_token, access_secret)
