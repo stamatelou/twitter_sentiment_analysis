@@ -176,7 +176,7 @@ if __name__ == "__main__":
         .trigger(processingTime='60 seconds').start()
     query.awaitTermination()
 ```
-We first create an empty SparkSession, we connect it to the socket we made available in the Part 1, and we load the batches with the tweet data locally. As soon as we receive the batch from the socket, we preprocess the received data, and then we apply the text classification to each tweet to define its polarity and subjectivity. Then, we collect all the tweets and save it in one file every minute (60 seconds) for efficient reads. The format of the saved file is parquet and to load it we downloaded the [ParquetFileViewer.exe](https://github.com/mukunku/ParquetViewer)
+We first create an empty SparkSession, we connect it to the socket we made available in the Part 1, and we load the batches with the tweet data locally. As soon as we receive the batch from the socket, we preprocess the received data, and then we apply the text classification to each tweet to define its polarity and subjectivity. Then, we collect all the tweets and save them in one file every minute (60 seconds) for efficient reads. The format of the saved file is parquet and to load it we downloaded the [ParquetFileViewer.exe](https://github.com/mukunku/ParquetViewer)
 
 
 
