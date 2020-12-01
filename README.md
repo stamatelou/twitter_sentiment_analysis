@@ -110,7 +110,6 @@ Before start streaming data from Twitter, we need to create a listening socket i
 ## Part 2: Preprocess the tweets using pyspark (Spark Structure Streaming)<br>
 
 ### <b>Step 1: </b> Setup the necessary packages <br>
-
 ```
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
@@ -118,22 +117,11 @@ from pyspark.sql.types import *
 from pyspark.sql import functions as F
 from textblob import TextBlob
 ```
+Pyspark is the Python API for Spark. Here, we use Spark Structured Streaming, which is a stream processing engine built on the Spark SQL engine and that's why we import the pyspark.sql module. We import it classes; SparkSession to create a stream sessions, functions and types to make available a list of build-in functions and data types accordingly. We also use textblob for the tweet data classification. 
 
-Pyspark is the Python API for Spark. Here, we use Spark Structured Streaming, which is a stream processing engine built on the Spark SQL engine and that's why we import the pyspark.sql module. We import it classes; SparkSession to create a stream sessions, functions and types to make available a list of build-in functions and data types accordingly. 
-
-### <b>Step 2: </b> Setup the necessary packages <br>
-
-
-
-
+### <b>Step 2: </b> Preprocessing the tweets <br>
 ```
-if __name__ == "__main__":
-    # create Spark session
-    spark = SparkSession.builder.appName("TwitterSentimentAnalysis").getOrCreate()
-
-    # read the tweet data from socket
-    lines = spark.readStream.format("socket").option("host", "0.0.0.0").option("port", 5555).load()
-    # Split the lines into words
+def preprocessing(lines):
     words = lines.select(explode(split(lines.value, "end_of_tweet")).alias("word"))
     words = words.na.replace('', None)
     words = words.na.drop()
@@ -142,26 +130,52 @@ if __name__ == "__main__":
     words = words.withColumn('word', F.regexp_replace('word', '#', ''))
     words = words.withColumn('word', F.regexp_replace('word', 'RT', ''))
     words = words.withColumn('word', F.regexp_replace('word', ':', ''))
+    return words
+```
 
-    def polarity_detection(text):
-        return TextBlob(text).sentiment.polarity
+
+### <b>Step 2: </b> Tweet classification <br>
+
+```
+# text classification
+def polarity_detection(text):
+    return TextBlob(text).sentiment.polarity
+def subjectivity_detection(text):
+    return TextBlob(text).sentiment.subjectivity
+def text_classification(words):
+    # polarity detection
     polarity_detection_udf = udf(polarity_detection, StringType())
-    words =words.withColumn("polarity", polarity_detection_udf("word"))
-
-    def subjectivity_detection(text):
-        return TextBlob(text).sentiment.subjectivity
+    words = words.withColumn("polarity", polarity_detection_udf("word"))
+    # subjectivity detection
     subjectivity_detection_udf = udf(subjectivity_detection, StringType())
-    words =words.withColumn("subjectivity", subjectivity_detection_udf("word"))
+    words = words.withColumn("subjectivity", subjectivity_detection_udf("word"))
+    return words
+```
+ Apply sentiment analysis using textblob
 
-    words =words.repartition(1)
-    query = words.writeStream.queryName("all_tweets").outputMode("append").format("parquet").option("path", "C:/Users/20194066/PycharmProjects/gettingstarted/venv/parc").option("checkpointLocation", "C:/Users/20194066/PycharmProjects/gettingstarted/venv/check").trigger(processingTime='60 seconds').start()
+### <b>Step 3: </b> Run the main function <br>
+```
+if __name__ == "__main__":
+    # create Spark session
+    spark = SparkSession.builder.appName("TwitterSentimentAnalysis").getOrCreate()
+
+    # read the tweet data from socket
+    lines = spark.readStream.format("socket").option("host", "0.0.0.0").option("port", 5555).load()
+    # Preprocess the data
+    words = preprocessing(lines)
+    # text classification to define polarity and subjectivity
+    words = text_classification(words)
+
+    words = words.repartition(1)
+    query = words.writeStream.queryName("all_tweets")\
+        .outputMode("append").format("parquet")\
+        .option("path", "C:/Users/20194066/PycharmProjects/gettingstarted/venv/parc")\
+        .option("checkpointLocation", "C:/Users/20194066/PycharmProjects/gettingstarted/venv/check")\
+        .trigger(processingTime='60 seconds').start()
     query.awaitTermination()
-
 ```
 
 For opening the parquet files download 
-
-## Part 3: Apply sentiment analysis using textblob <br>
 
 
 
