@@ -150,7 +150,7 @@ def text_classification(words):
     words = words.withColumn("subjectivity", subjectivity_detection_udf("word"))
     return words
 ```
-Apply sentiment analysis using textblob
+Apply sentiment analysis using textblob to identify polarity and subjectivity scores within the range [0,1]. Since pyspark does not have a built-in function we used the user-defined function (udf) module to be able to apply the textblob function. 
 
 ### <b>Step 4: </b> Run the main function <br>
 ```
@@ -173,8 +173,9 @@ if __name__ == "__main__":
         .trigger(processingTime='60 seconds').start()
     query.awaitTermination()
 ```
+We first create an empty SparkSession, we connect it to the socket we made available in the Part 1, and we load the batches with the tweet data locally. As soon as we receive the batch from the socket, we preprocess the received data, and then we apply the text classification to each tweet to define its polarity and subjectivity. Then, we collect all the tweets and save it in one file every minute (60 seconds) for efficient reads. The format of the saved file is parquet and to load it we downloaded the [ParquetFileViewer.exe](https://github.com/mukunku/ParquetViewer)
 
-For opening the parquet files download 
+
 
 First run the part one and let it running, and then run the part from a different IDE. 
 
