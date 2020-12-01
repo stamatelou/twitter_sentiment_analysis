@@ -71,7 +71,7 @@ class TweetsListener(StreamListener):
     return True
 ```
 The class TweetsListener represents a StreamListener instance, which contains one tweet per time. When we will activate the Stream, it creates the instance. The class consists of 3 methods; the on_data, the on_error, and the init. <br>
-The <b>on_data</b> method of the TweetsListener receives all messages and defines which data to extract for each tweet from the Twitter Streaming API. Some examples could be the main message,comments,and hashtags. In our case we want to extract the text of the tweet. If we request the ['text'] field from each tweet, we will only receive the messages that are shorter than 140 characters. To always receive the full message, we need first to check if the tweet is longer than 140 charachetrs. If it is, we extract the ['extended_tweet']['full_text'] and if it is not we extract as before the ['text'] field. <br>
+The <b>on_data</b> method of the TweetsListener receives all messages and defines which data to extract for each tweet from the Twitter Streaming API. Some examples could be the main message,comments,and hashtags. In our case we want to extract the text of the tweet. If we request the ['text'] field from each tweet, we will only receive the messages that are shorter than 140 characters. To always receive the full message, we need first to check if the tweet is longer than 140 charachetrs. If it is, we extract the ['extended_tweet']['full_text'] and if it is not we extract as before the ['text'] field. In the end of each tweet, we add the "end_of_tweet", so that we can identify easier the end of each tweet later. <br>
 The <b>__init__</b> method initializes the socket of the Twitter Streaming API and the <b>on_error</b> method make sure that the stream works.
 
 ### <b> Step 4: </b> Sent data from Twitter <br>
@@ -132,10 +132,9 @@ def preprocessing(lines):
     words = words.withColumn('word', F.regexp_replace('word', ':', ''))
     return words
 ```
+Preprocess the tweets so that we can have only the tweet text. It receives in each batch many tweets from the Streaming Twitter API, and splits the tweets at the word "end_of_tweet". Then, it replaces the removes the empty rows and it applies regular expressions to clean up the tweet text. It removes the links (https://..), the usernames (@..), the hashtags (#), the string that indicates if the current tweet is a retweet (RT), and the character ":". 
 
-
-### <b>Step 2: </b> Tweet classification <br>
-
+### <b>Step 3: </b> Tweet classification <br>
 ```
 # text classification
 def polarity_detection(text):
@@ -151,9 +150,9 @@ def text_classification(words):
     words = words.withColumn("subjectivity", subjectivity_detection_udf("word"))
     return words
 ```
- Apply sentiment analysis using textblob
+Apply sentiment analysis using textblob
 
-### <b>Step 3: </b> Run the main function <br>
+### <b>Step 4: </b> Run the main function <br>
 ```
 if __name__ == "__main__":
     # create Spark session
@@ -177,5 +176,5 @@ if __name__ == "__main__":
 
 For opening the parquet files download 
 
-
+First run the part one and let it running, and then run the part from a different IDE. 
 
