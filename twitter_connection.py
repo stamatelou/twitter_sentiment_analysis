@@ -1,7 +1,7 @@
 import tweepy
-from tweepy import OAuthHandler
 from tweepy import Stream
 from tweepy.streaming import StreamListener
+from tweepy import OAuthHandler
 import socket
 import json
 
@@ -13,21 +13,25 @@ access_secret='nhLAqoCicm4FJXwRw75MeQTeXxRu9L0Us4RqVxXgQP9AQ'
 class TweetsListener(StreamListener):
   # tweet object listens for the tweets
   def __init__(self, csocket):
-      self.client_socket = csocket
+    self.client_socket = csocket
   def on_data(self, data):
     try:  
-        msg = json.loads( data )
-        print("new message")
-        # if tweet is longer than 140 characters
-        if "extended_tweet" in msg:
-          # add at the end "end_of_tweet" to facilitate preprocessing
-          self.client_socket.send(str(msg['extended_tweet']['full_text'] +"end_of_tweet").encode('utf-8'))         
-          print(msg['extended_tweet']['full_text'])
-        else:
-          # add at the end "end_of_tweet" to facilitate preprocessing
-          self.client_socket.send(str(msg['text']+"end_of_tweet").encode('utf-8'))
-          print(msg['text'])
-        return True
+      msg = json.loads( data )
+      print("new message")
+      # if tweet is longer than 140 characters
+      if "extended_tweet" in msg:
+        # add at the end of each tweet "t_end" 
+        self.client_socket\
+            .send(str(msg['extended_tweet']['full_text']+"t_end")\
+            .encode('utf-8'))         
+        print(msg['extended_tweet']['full_text'])
+      else:
+        # add at the end of each tweet "t_end" 
+        self.client_socket\
+            .send(str(msg['text']+"t_end")\
+            .encode('utf-8'))
+        print(msg['text'])
+      return True
     except BaseException as e:
         print("Error on_data: %s" % str(e))
     return True
@@ -36,7 +40,7 @@ class TweetsListener(StreamListener):
     return True
 
 def sendData(c_socket, keyword):
-  print('start sending data from client - Twitter to server - local machine')
+  print('start sending data from Twitter to socket')
   # authentication based on the credentials
   auth = OAuthHandler(consumer_key, consumer_secret)
   auth.set_access_token(access_token, access_secret)

@@ -5,7 +5,7 @@ from pyspark.sql import functions as F
 from textblob import TextBlob
 
 def preprocessing(lines):
-    words = lines.select(explode(split(lines.value, "end_of_tweet")).alias("word"))
+    words = lines.select(explode(split(lines.value, "t_end")).alias("word"))
     words = words.na.replace('', None)
     words = words.na.drop()
     words = words.withColumn('word', F.regexp_replace('word', r'http\S+', ''))
