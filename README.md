@@ -17,8 +17,8 @@ We use Python version 3.7.6 and Spark version 2.4.7. We should be cautious on th
 <b> textblob:</b> apply sentiment analysis on the twitter text data <br>
 
 ## Instructions
-First run the <b>Part 1:</b> <i>twitter_connection.py</i> and let it continue running. <br>
-Then run the <b>Part 2:</b> <i>sentiment_analysis.py</i> from a different IDE. 
+First, run the <b>Part 1:</b> <i>twitter_connection.py</i> and let it continue running. <br>
+Then, run the <b>Part 2:</b> <i>sentiment_analysis.py</i> from a different IDE. 
 
 ## Part 1: Send tweets from the Twitter API 
 In this part, we use our developer credentials to authenticate and connect to the Twitter API. We also create a TCP socket between Twitter's API and Spark, which waits for the call of the Spark Structured Streaming and then sends the Twitter data. Here, we use Python's Tweepy library for connecting and getting the tweets from the Twitter API. 
