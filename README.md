@@ -1,6 +1,6 @@
-<H1>Sentiment analysis on streaming twitter data in real-time using Spark Structured Streaming & Python </H1>
+<H1>Sentiment analysis on streaming twitter data in using Spark Structured Streaming & Python </H1>
 
-This project is a good starting point for those who have little or no experience with Apache Spark Streaming. We use Twitter data since Twitter provides an API for developers that is easy to access.
+This project is a good starting point for those who have little or no experience with <b>Apache Spark Streaming</b>. We use Twitter data since Twitter provides an API for developers that is easy to access.
 We present an end-to-end architecture on how to stream data from Twitter, clean it, and apply a simple sentiment analysis model to detect the polarity and subjectivity of each tweet.
 
 <b> Input data:</b> Live tweets with a keyword <br>
@@ -17,8 +17,8 @@ We use Python version 3.7.6 and Spark version 2.4.7. We should be cautious on th
 <b> textblob:</b> apply sentiment analysis on the twitter text data <br>
 
 ## Instructions
-Run in a IDE locally the twitter_connection.py
-First run the <b>Part 1:</b> <i>twitter_connection.py</i> and let it running, and then run the <b>Part 2:</b> <i>sentiment_analysis.py</i> from a different IDE. 
+First run the <b>Part 1:</b> <i>twitter_connection.py</i> and let it continue running. <br>
+Then run the <b>Part 2:</b> <i>sentiment_analysis.py</i> from a different IDE. 
 
 ## Part 1: Send tweets from the Twitter API 
 In this part, we use our developer credentials to authenticate and connect to the Twitter API. We also create a TCP socket between Twitter's API and Spark, which waits for the call of the Spark Structured Streaming and then sends the Twitter data. Here, we use Python's Tweepy library for connecting and getting the tweets from the Twitter API. 
